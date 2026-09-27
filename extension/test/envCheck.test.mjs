@@ -34,7 +34,7 @@ test("环境自检：真实调度 scripts/env_check.py 并解析结论", async (
   assert.match(joined, /版本兼容性自检/, "自检脚本应输出结论段");
   if (tf.installed) {
     // 有 TF 的环境（本机 / 装了依赖的 CI）：必须给出 ✅ 兼容结论
-    t.comment(`TF ${tf.version} → ok=${result.ok}`);
+    t.diagnostic(`TF ${tf.version} → ok=${result.ok}`);
     assert.equal(result.ok, true, "TF 已装但自检未通过：" + joined.slice(-400));
   } else {
     // 无 TF 的环境（CI extension job）：结论应为"不兼容"并给出修复建议——
