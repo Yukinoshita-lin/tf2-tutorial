@@ -1,0 +1,64 @@
+{
+  "entry": "chapters/03_mlp_mnist.py",
+  "goals": "把数据 reshape → normalize → 喂入 `Dense`，理解\"展平 + 全连接\"为何对 28×28 足够。",
+  "concepts": [
+    "[Softmax](glossary_zh.md#softmax)：把输出变成概率分布的激活函数",
+    "[验证集 (Validation Set)](glossary_zh.md#验证集-validation-set)：训练时用来调参的独立数据",
+    "[过拟合 (Overfitting)](glossary_zh.md#过拟合-overfitting)：训练集表现好但测试集表现差",
+    "[激活函数 (Activation Function)](glossary_zh.md#激活函数-activation-function)：给网络引入非线性的函数",
+    "[权重 (Weight)](glossary_zh.md#权重-weight)：神经网络的可学习参数"
+  ],
+  "experiments": [
+    "改变隐藏层大小：试试 `hidden=(32,)` 和 `hidden=(512, 256, 128)`，比较训练准确率、验证准确率、参数数量。",
+    "模型越大越容易过拟合，你看到这种趋势了吗？",
+    "去掉归一化：把 `x_train / 255.0` 改成直接用 `x_train`（0~255 的原始像素值），看看训练还能不能收敛。",
+    "为什么不归一化就训练不好？（提示：想想梯度的大小和学习率的关系）",
+    "换激活函数：把所有 `relu` 换成 `sigmoid`，观察训练速度和最终准确率。",
+    "ReLU 为什么比 sigmoid 更常用？（提示：深层网络中 sigmoid 容易导致梯度消失）"
+  ],
+  "pitfalls": [
+    "标签格式和损失函数不匹配：",
+    "如果标签是整数（比如 `5`），用 `sparse_categorical_crossentropy`",
+    "如果标签是 one-hot（比如 `[0,0,0,0,0,1,0,0,0,0]`），用 `categorical_crossentropy`",
+    "搞混了就会报错或者准确率一直很低。",
+    "忘记归一化像素值：图片像素值通常是 0~255，直接喂给网络会导致训练不稳定。一定要除以 255 归一化到 0~1。",
+    "把测试集当验证集用：测试集是\"最终考试\"，只能用一次。调参的时候只能用验证集，不能偷看测试集，否则就是作弊。",
+    "Flatten 的位置不对：Flatten 应该在第一个 Dense 层之前，把图片展平成向量。如果放在后面就没意义了。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 2：标签格式和损失函数不匹配",
+      "lesson": "整数标签 ↔ `sparse_`；one-hot 标签 ↔ 不带 sparse 的。"
+    }
+  ],
+  "passCriteria": "跑通脚本并保存训练曲线；不看资料说清三份数据的分工； 算对上面参数量那道题。",
+  "quiz": [
+    {
+      "question": "`Dense(128)` 接在 784 维输入后，参数量是多少？",
+      "answer": "784×128 + 128 = 100,480 （权重矩阵 + 偏置，会算了你就能估算任意网络的规模）。"
+    },
+    {
+      "question": "softmax 输出的 10 个数有什么性质？",
+      "answer": "非负、总和为 1——一个合法的概率分布。"
+    },
+    {
+      "question": "验证集和测试集各干什么用？能互换吗？",
+      "answer": "验证集用来调参（可以反复用）， 测试集只做最终评估（只能用一次）；互换会让\"期末考试\"泄题。 挑战题："
+    }
+  ],
+  "reading": [
+    "3Blue1Brown《神经网络》第 2 集：梯度下降的动画直觉",
+    "Chollet《Deep Learning with Python (2nd)》第 2 章末：MNIST 完整案例（本书的\"原型\"）",
+    "`src/tf2tutorial/models.py`：本章用的 `build_mlp` 就来自它——读一遍，体会\"章节脚本调库，不重复造轮子\""
+  ],
+  "id": "03_mlp_mnist",
+  "num": "03",
+  "title": "第 3 章 · MLP 分类 MNIST",
+  "deps": [
+    "02_linear_regression"
+  ],
+  "mdRange": [
+    528,
+    704
+  ]
+}

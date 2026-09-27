@@ -1,0 +1,27 @@
+{
+  "entry": "chapters/00_ml_basics.py",
+  "goals": "通读本章并跑通入口脚本。",
+  "concepts": [],
+  "experiments": [
+    "打开命令行，跑一下第 1 章的脚本，确认环境没问题： ```powershell python scripts\\use_tf2_env.py chapters\\01_tensors_autograd.py ``` 如果报错，先看最后的\"调试速查\"部分。",
+    "浏览一下 `chapters/` 目录，数数有几个 `.py` 文件，对应几章内容。",
+    "看看 `figures/` 目录里已有的图片，大概了解每章会产出什么。"
+  ],
+  "pitfalls": [
+    "路径问题：一定要从项目根目录（`F:\\Tensorflow`）运行脚本，否则相对路径会出错。",
+    "Python 版本不对：如果你直接用 `python` 而不是 `scripts\\use_tf2_env.py`，可能调用的是系统 Python 而不是 tf2-env 里的。",
+    "首次运行下载数据慢：第 4、5、6 章首次运行会下载数据集，耐心等待，或者提前运行 `python scripts\\download_data.py`。"
+  ],
+  "counterExamples": [],
+  "passCriteria": "",
+  "quiz": [],
+  "reading": [],
+  "id": "00_ml_basics",
+  "num": "00",
+  "title": "第 0 章 · 路线图与环境",
+  "deps": [],
+  "mdRange": [
+    67,
+    177
+  ]
+}

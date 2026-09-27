@@ -1,0 +1,18 @@
+# TensorFlow CPU 教学最小依赖
+# 安装命令: pip install -r requirements.txt
+#
+# 注意: tf2tutorial/src/*.py 中部分模块(visualize, training)即使没有 tensorflow 也能跑;
+# chapters/01_tensors_autograd.py 用 numpy 即可演示核心概念。
+
+numpy>=1.23
+matplotlib>=3.7
+tensorflow>=2.16,<3.0
+tensorflow-datasets>=4.9
+Pillow>=10.0
+tensorboard>=2.16
+rich>=13.0
+tqdm>=4.66
+pyyaml>=6.0
+
+# 测试与开发
+pytest>=7.4

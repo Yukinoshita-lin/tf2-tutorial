@@ -1,0 +1,51 @@
+{
+  "entry": "chapters/10_edge_raspberry_pi.py",
+  "goals": "把第 9 章项目的模型做**三种量化**、压成 `.tflite`，并在树莓派（或任意无 GPU 设备）",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 1：量化完直接部署，没重新评估精度",
+      "lesson": "规矩：**每次量化后，精度评估和基准测试都要重跑一遍**。脚本里三种量化的"
+    },
+    {
+      "title": "反例 2：树莓派上照搬 PC 的 batch size",
+      "lesson": "边缘设备推理默认 batch=1；\"资源受限\"要体现在每一个参数上。"
+    },
+    {
+      "title": "反例 3：预处理不一致（第 8 章反例 4 的边缘版）",
+      "lesson": "`deploy/pi_classify.py` 把预处理写死在推理脚本里，就是为了让两端永远一致。"
+    }
+  ],
+  "passCriteria": "能向别人讲清\"这笔精度换速度的账怎么算\"； 亲手在你的目标设备上跑通一次推理。",
+  "quiz": [
+    {
+      "question": "三种量化各牺牲什么、换来什么？",
+      "answer": "float16：体积÷2，精度几乎无损，速度提升有限； int8：体积÷4 + 提速 2~4 倍，需要校准数据，有精度损失风险。"
+    },
+    {
+      "question": "为什么 int8 量化需要代表性数据集？",
+      "answer": "校准激活值的动态范围。"
+    },
+    {
+      "question": "边缘设备推理的 batch size 应该是多少？",
+      "answer": "1（资源受限 + 实时场景本就逐条处理）。 挑战题："
+    }
+  ],
+  "reading": [
+    "`docs/raspberry_pi_deployment_zh.md`：本策的 9 章完整展开（含刷系统、摄像头、实时循环）",
+    "TensorFlow Lite 官方 *Quantization spec*：三种量化的精确语义",
+    "Petumin 等边缘 AI 项目：看看真产品怎么组织部署包"
+  ],
+  "id": "10_edge_raspberry_pi",
+  "num": "10",
+  "title": "实战 10 · 边缘部署",
+  "deps": [
+    "08_save_and_export"
+  ],
+  "mdRange": [
+    1762,
+    1854
+  ]
+}

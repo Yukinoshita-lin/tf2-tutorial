@@ -1,0 +1,54 @@
+{
+  "entry": "chapters/09_capstone_image_classifier.py",
+  "goals": "前面 8 章的知识点都是\"零件\"；这一章把它们装配成一台整车，并**独立**跑完全流程：",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 1：只存权重，加载进不同结构",
+      "lesson": "**权重不离结构**——交付模型时交付它的\"身体\"。"
+    },
+    {
+      "title": "反例 4：保存了模型、丢了预处理——最隐蔽的部署事故",
+      "lesson": "**预处理是模型的一部分**——这是部署事故排行榜的第一名。"
+    }
+  ],
+  "passCriteria": "能独立跑通全流程，且报告能回答\"每一步为什么这么设计\"。",
+  "quiz": [
+    {
+      "question": "项目六步流水线是哪六步？",
+      "answer": "数据管道 → 基线 → 迁移训练 → 深入评估 → 导出 → 报告。"
+    },
+    {
+      "question": "基线的作用是什么？",
+      "answer": "给所有后续改动提供参照系。"
+    },
+    {
+      "question": "数据增强应该只作用在哪份数据上？",
+      "answer": "训练集。 挑战题（这就是\"自己的项目\"的起点）："
+    }
+  ],
+  "reading": [
+    "`teaching/project_template.md`：7 步建项目 + 报告模板 + 常见陷阱自查表",
+    "Kaggle 入门赛（Titanic / Digit Recognizer）：别人的完整 notebook 是最好的对照",
+    "Chollet《Deep Learning with Python (2nd)》末章：Kaggle 实战的方法论"
+  ],
+  "id": "09_capstone",
+  "num": "09",
+  "title": "实战 09 · 综合项目",
+  "deps": [
+    "01_tensors_autograd",
+    "02_linear_regression",
+    "03_mlp_mnist",
+    "04_cnn_cifar10",
+    "05_text_imdb",
+    "06_transfer_learning",
+    "07_callbacks_tensorboard",
+    "08_save_and_export"
+  ],
+  "mdRange": [
+    1665,
+    1762
+  ]
+}

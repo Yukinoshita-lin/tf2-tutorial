@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tf2tutorial"
+version = "0.1.0"
+description = "Teaching-oriented TensorFlow 2 project: tensors, Keras, training loops, callbacks, transfer learning, and export."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "tf2-tutorial contributors" }]
+classifiers = [
+    "Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "numpy>=1.23",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+tf = [
+    "tensorflow>=2.16,<3.0",
+    "tensorflow-datasets>=4.9",
+    "Pillow>=10.0",
+]
+dev = [
+    "pytest>=7.4",
+    "rich>=13.0",
+    "tqdm>=4.66",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+tf2-ch01 = "tf2tutorial.chapters_dispatch:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = ["tests"]

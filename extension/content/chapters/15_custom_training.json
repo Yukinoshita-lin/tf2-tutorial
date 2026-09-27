@@ -1,0 +1,52 @@
+{
+  "entry": "chapters/15_custom_training.py",
+  "goals": "前面所有章都是\"用 Keras\"；本章教\"写 Keras\"——当预制件不够用时：",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 1：在 call() 里创建权重",
+      "lesson": "权重属于 build()。这是自定义层的头号错误，报错信息通常会提示"
+    },
+    {
+      "title": "反例 2：tape.gradient 返回 None",
+      "lesson": "确认所有前向代码都在 `with tape:` 里；检查有没有 `.numpy()` 混入。"
+    },
+    {
+      "title": "反例 3：首次调用 tf.function 的编译开销污染计时",
+      "lesson": "规矩：先跑一次 warmup，再开始计时（脚本里就是这么做的）。"
+    }
+  ],
+  "passCriteria": "能从零写出一个可训练的自定义层 + 自定义损失 + GradientTape 循环，并解释每一行为什么存在。至此，第 1 章与第 2 章正式闭环。",
+  "quiz": [
+    {
+      "question": "build 和 call 的分工是什么？为什么这样拆？",
+      "answer": "build 一次性建权重（拿到 输入形状后），call 每次做计算。"
+    },
+    {
+      "question": "`tape.gradient` 返回 None 的两个常见原因？",
+      "answer": "前向不在 tape 上下文内 / 梯度流被不可导操作切断。"
+    },
+    {
+      "question": "Huber 什么时候像 MSE、什么时候像 MAE？",
+      "answer": "|误差|≤delta 像 MSE， >delta 像 MAE；delta 是两者的分界。 挑战题："
+    }
+  ],
+  "reading": [
+    "Keras 官方 *Making new layers and models via subclassing*：本章的完整版",
+    "Chollet《Deep Learning with Python (2nd)》第 7 章：Keras 高级 API 的权威阐述",
+    "[16 周学期制课程表](study_plan_semester.md)：把进阶篇变成你的一个学期"
+  ],
+  "id": "15_custom_training",
+  "num": "15",
+  "title": "进阶篇 15 · 自定义训练与性能",
+  "deps": [
+    "01_tensors_autograd",
+    "11_tfdata_pipeline"
+  ],
+  "mdRange": [
+    2306,
+    2423
+  ]
+}

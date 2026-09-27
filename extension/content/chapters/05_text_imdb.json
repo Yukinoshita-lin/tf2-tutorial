@@ -1,0 +1,65 @@
+{
+  "entry": "chapters/05_text_imdb.py",
+  "goals": "用全连接网络对\"影评正/负\"二分类。",
+  "concepts": [
+    "[嵌入 (Embedding)](glossary_zh.md#嵌入-embedding)：把离散的词映射成稠密向量",
+    "[激活函数 (Activation Function)](glossary_zh.md#激活函数-activation-function)：sigmoid 用于二分类输出",
+    "[损失函数 (Loss Function)](glossary_zh.md#损失函数-loss-function)：二元交叉熵用于二分类",
+    "[过拟合 (Overfitting)](glossary_zh.md#过拟合-overfitting)：文本任务中高维输入更容易过拟合",
+    "[深度学习 (Deep Learning)](glossary_zh.md#深度学习-deep-learning)：从图像扩展到文本领域"
+  ],
+  "experiments": [
+    "换成 Embedding 层：把 one-hot + Dense 的结构换成 Embedding + GlobalAveragePooling1D + Dense，比较准确率、参数数量和训练速度。",
+    "Embedding 的输入是整数序列（每个词的编号），不是 one-hot 向量。",
+    "哪种方法效果更好？为什么？",
+    "改变词典大小：把最常用词数量从 10,000 改成 2,000 或 20,000，观察模型表现的变化。",
+    "词典太小会怎样？（提示：很多词被忽略，信息丢失）",
+    "词典太大会怎样？（提示：输入维度太高，容易过拟合）"
+  ],
+  "pitfalls": [
+    "文本预处理不一致：训练和测试用了不同的词典（比如一个用 10,000 词，一个用 20,000 词），输入维度对不上。确保预处理逻辑一致。",
+    "序列长度不一致：如果用 Embedding 层，每条文本的长度（词数）不一样，需要 padding（补零）到相同长度才能组成 batch。Keras 的 `pad_sequences` 可以搞定。",
+    "one-hot 维度爆炸：词典一大，one-hot 向量的维度就爆炸了（比如 10 万维），又稀疏又浪费。这种情况下 Embedding 是更好的选择。",
+    "忘记二分类用 sigmoid + binary_crossentropy：二分类不是多分类，不要用 softmax + categorical_crossentropy。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 1：训练/测试用了不同的词典",
+      "lesson": "预处理逻辑必须**一份代码、两处调用**，而不是各写一遍。"
+    },
+    {
+      "title": "反例 2：词编号越界喂 Embedding",
+      "lesson": "原因：编号必须 < vocab_size。数据里漏过滤生僻词就会踩雷。"
+    }
+  ],
+  "passCriteria": "不看资料说清\"文本 → 张量 → 分类\"的三步转换； 能向别人解释词袋和 Embedding 的取舍（而不是背结论）。",
+  "quiz": [
+    {
+      "question": "词袋模型丢掉了文本的什么信息？代价是什么？",
+      "answer": "词序。\"狗咬人\"和\"人咬狗\" 变成同一个向量——大多数时候够用，歧义句上会翻车。"
+    },
+    {
+      "question": "sigmoid 输出 0.93 代表什么？",
+      "answer": "模型认为这条影评是好评的概率为 93%。"
+    },
+    {
+      "question": "为什么词典越大 one-hot 越不划算？",
+      "answer": "向量维度 = 词典大小，10 万词就是 10 万维， 又稀疏又费内存，而 Embedding 用 64 维稠密向量就够了。 挑战题："
+    }
+  ],
+  "reading": [
+    "Jay Alammar *Visualizing Word Embeddings*：词向量的可视化直觉",
+    "Chollet《Deep Learning with Python (2nd)》文本章节：从词袋到序列模型",
+    "手册第 9 章 9.2 节\"方向二 NLP\"：词袋之后的世界（RNN / Transformer 路线图）"
+  ],
+  "id": "05_text_imdb",
+  "num": "05",
+  "title": "第 5 章 · 文本分类 (IMDB)",
+  "deps": [
+    "03_mlp_mnist"
+  ],
+  "mdRange": [
+    908,
+    1085
+  ]
+}

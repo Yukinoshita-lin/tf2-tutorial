@@ -1,0 +1,66 @@
+{
+  "entry": "chapters/06_transfer_learning.py",
+  "goals": "把 MobileNetV2 当作\"通用视觉特征提取器\"。",
+  "concepts": [
+    "[迁移学习 (Transfer Learning)](glossary_zh.md#迁移学习-transfer-learning)：把预训练模型的知识用到新任务上",
+    "[过拟合 (Overfitting)](glossary_zh.md#过拟合-overfitting)：小数据集上微调更容易过拟合",
+    "[深度学习 (Deep Learning)](glossary_zh.md#深度学习-deep-learning)：层次化特征提取的威力",
+    "[卷积 (Convolution)](glossary_zh.md#卷积-convolution)：底层卷积提取通用视觉特征",
+    "[正则化 (Regularization)](glossary_zh.md#正则化-regularization)：迁移学习本身就是一种正则化"
+  ],
+  "experiments": [
+    "试试不同的冻结层数：试试冻结全部、冻结最后 20 层、冻结最后 50 层、完全不冻结，比较最终准确率和训练速度。",
+    "冻结得多 → 训练快但可能不够准",
+    "冻结得少 → 训练慢但可能更准",
+    "你的数据集大小和这个选择有关系吗？",
+    "换一个预训练模型：试试 ResNet50、EfficientNetB0 等其他预训练模型，比较大小、速度和准确率。",
+    "Keras 内置了很多预训练模型：`tf.keras.applications.*`"
+  ],
+  "pitfalls": [
+    "忘记预处理方式匹配：不同的预训练模型有不同的预处理要求。比如有的要归一化到 [-1, 1]，有的要减去 ImageNet 均值。用错了预处理，模型效果会大打折扣。",
+    "正确做法：用 `tf.keras.applications.mobilenet_v2.preprocess_input` 这种配套的预处理函数。",
+    "微调时学习率太大：微调的时候学习率要比从头训练小很多（比如小 10 倍），否则会把预训练的权重搞坏。",
+    "include_top 参数理解错：`include_top=True` 表示包含最后的全连接分类层（1000 类），`include_top=False` 表示只要特征提取部分。做迁移学习一般用 `include_top=False`，然后自己加分类头。",
+    "BatchNormalization 层的处理：微调时，BatchNormalization 层要特殊处理——即使解冻了上面的层，BN 层也应该保持冻结状态（用它在 ImageNet 上学到的均值和方差）。Keras 中设置 `trainable=False` 时会自动处理，但解冻后要注意。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 1：一上来就全解冻——灾难性遗忘现场",
+      "lesson": "原因：随机头的初始梯度把 ImageNet 学到的底层特征搅乱了。"
+    },
+    {
+      "title": "反例 3：微调学习率太大",
+      "lesson": "**冻结训练用常规 lr，微调用它的十分之一到百分之一**。"
+    }
+  ],
+  "passCriteria": "不看书写出两阶段训练伪代码并解释每阶段的学习率选择； 能说出\"数据量越少，越该冻结得多\"的原因。",
+  "quiz": [
+    {
+      "question": "迁移学习\"迁移\"的到底是什么？",
+      "answer": "底层通用特征（边缘/纹理/形状）的表示能力， 而不是某个具体任务的分类结果。"
+    },
+    {
+      "question": "为什么分类头要最后才解冻/或者说先训练？",
+      "answer": "让头先学会\"用\"特征， 避免随机头的坏梯度污染好特征。"
+    },
+    {
+      "question": "`include_top=False` 之后自己的头需要什么？",
+      "answer": "全局池化（把特征图变向量） + 按类别数配的 Dense + softmax。 挑战题："
+    }
+  ],
+  "reading": [
+    "MobileNetV2 论文（Sandler et al., 2018）：倒残差结构怎么做到又小又准",
+    "Keras 官方 *Transfer learning & fine-tuning* 教程：本策的工业级完整版",
+    "CS231n *Transfer Learning* 讲义：什么时候迁移有效，什么时候不如从零训"
+  ],
+  "id": "06_transfer_learning",
+  "num": "06",
+  "title": "第 6 章 · 迁移学习 (tf_flowers)",
+  "deps": [
+    "04_cnn_cifar10"
+  ],
+  "mdRange": [
+    1085,
+    1270
+  ]
+}

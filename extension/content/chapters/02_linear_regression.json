@@ -1,0 +1,68 @@
+{
+  "entry": "chapters/02_linear_regression.py",
+  "goals": "学会 `tf.keras.Sequential` / `Dense` / `compile` / `fit`。",
+  "concepts": [
+    "[Keras](glossary_zh.md#keras)：TensorFlow 的高层 API，让建模更简单",
+    "[多层感知机 (MLP)](glossary_zh.md#多层感知机-mlp-multi-layer-perceptron)：全连接层堆叠成的网络",
+    "[损失函数 (Loss Function)](glossary_zh.md#损失函数-loss-function)：衡量预测和真实值差距的函数",
+    "[优化器 (Optimizer)](glossary_zh.md#优化器-optimizer)：根据梯度更新参数的算法",
+    "[轮次 (Epoch)](glossary_zh.md#轮次-epoch)：所有训练数据被完整过一遍的单位"
+  ],
+  "experiments": [
+    "加一层隐藏层：把模型从单层 `Dense(1)` 改成两层： ```python model = models.Sequential([ layers.Input(shape=(1,)), layers.Dense(64, activation='relu'), layers.Dense(1) ]) ``` 观察 lo",
+    "换优化器：把 `optimizer=\"sgd\"` 换成 `optimizer=\"adam\"`，同样训练 30 个 epoch，比较最终 loss。",
+    "Adam 通常比 SGD 收敛更快，你观察到了吗？",
+    "增加数据噪音：把 `noise` 从 0.1 调到 0.5，再调到 1.0，看看训练后的模型在测试集上的表现。",
+    "噪音越大，模型越难拟合，这正常吗？为什么？"
+  ],
+  "pitfalls": [
+    "input_shape 写错了：`input_shape` 是单个样本的形状，不是整个数据集的形状。比如每个样本是 1 个数字，就写 `shape=(1,)`，不要写 `shape=(100, 1)`。",
+    "回归任务加了 sigmoid：sigmoid 会把输出限制在 0 到 1 之间，如果你的目标值范围更大（比如房价预测），最后一层千万不要加激活函数。",
+    "忘了归一化输入：如果输入 x 的数值很大（比如 1000 以上），训练会很不稳定。习惯上要把输入归一化到 0~1 或 -1~1 之间。",
+    "epochs 太少就下结论：有时候模型只是还没收敛，不是模型不行。先把 epochs 调大看看趋势，再判断模型够不够用。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 1：`input_shape` 写成整个数据集的形状",
+      "lesson": "报错信息里给出的两个 shape，就是你要核对的两个维度。"
+    },
+    {
+      "title": "反例 2：回归任务加了 sigmoid——沉默的全错",
+      "lesson": "**不崩但全错的 silent bug 最危险**——回归输出层永远别加激活。"
+    },
+    {
+      "title": "反例 3：忘 compile 直接 fit",
+      "lesson": "Keras 的报错会直接告诉你缺什么——**学会读报错，比背 API 更重要**。"
+    }
+  ],
+  "passCriteria": "合上手册，能从空白文件默写出\"搭 → compile → fit\"三步并跑通； 能说出每一步分别对应第 1 章四步循环中的哪几步。",
+  "quiz": [
+    {
+      "question": "`compile` 的三要素是什么？",
+      "answer": "优化器（怎么更新）、损失函数（怎么算差）、 metrics（额外关注什么）。"
+    },
+    {
+      "question": "epoch 和 batch size 什么关系？",
+      "answer": "epoch = 全部数据过一遍； batch size = 每次梯度更新用多少样本；一个 epoch 有 `样本数/batch_size` 次更新。"
+    },
+    {
+      "question": "隐藏层加 `relu` 是为了什么？",
+      "answer": "引入非线性——没有它，一百层 Dense 等价于一层线性变换。 挑战题："
+    }
+  ],
+  "reading": [
+    "Chollet《Deep Learning with Python (2nd)》第 3 章：Keras 作者亲讲 API 设计哲学",
+    "TensorFlow 官方 *Keras quickstart*：十分钟过一遍核心 API",
+    "手册第 10 章 10.5 节：优化器 SGD/Adam/AdamW 怎么选"
+  ],
+  "id": "02_linear_regression",
+  "num": "02",
+  "title": "第 2 章 · 用 Keras 写第一个模型",
+  "deps": [
+    "01_tensors_autograd"
+  ],
+  "mdRange": [
+    352,
+    528
+  ]
+}

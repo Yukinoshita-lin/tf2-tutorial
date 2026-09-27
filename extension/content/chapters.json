@@ -1,0 +1,163 @@
+[
+  {
+    "id": "00_ml_basics",
+    "num": "00",
+    "title": "第 0 章 · 路线图与环境",
+    "entry": "chapters/00_ml_basics.py",
+    "deps": []
+  },
+  {
+    "id": "01_tensors_autograd",
+    "num": "01",
+    "title": "第 1 章 · 张量与自动求导",
+    "entry": "chapters/01_tensors_autograd.py",
+    "deps": [
+      "00_ml_basics"
+    ]
+  },
+  {
+    "id": "02_linear_regression",
+    "num": "02",
+    "title": "第 2 章 · 用 Keras 写第一个模型",
+    "entry": "chapters/02_linear_regression.py",
+    "deps": [
+      "01_tensors_autograd"
+    ]
+  },
+  {
+    "id": "03_mlp_mnist",
+    "num": "03",
+    "title": "第 3 章 · MLP 分类 MNIST",
+    "entry": "chapters/03_mlp_mnist.py",
+    "deps": [
+      "02_linear_regression"
+    ]
+  },
+  {
+    "id": "04_cnn_cifar10",
+    "num": "04",
+    "title": "第 4 章 · CNN 入门 (CIFAR-10)",
+    "entry": "chapters/04_cnn_cifar10.py",
+    "deps": [
+      "03_mlp_mnist"
+    ]
+  },
+  {
+    "id": "05_text_imdb",
+    "num": "05",
+    "title": "第 5 章 · 文本分类 (IMDB)",
+    "entry": "chapters/05_text_imdb.py",
+    "deps": [
+      "03_mlp_mnist"
+    ]
+  },
+  {
+    "id": "06_transfer_learning",
+    "num": "06",
+    "title": "第 6 章 · 迁移学习 (tf_flowers)",
+    "entry": "chapters/06_transfer_learning.py",
+    "deps": [
+      "04_cnn_cifar10"
+    ]
+  },
+  {
+    "id": "07_callbacks_tensorboard",
+    "num": "07",
+    "title": "第 7 章 · 回调函数与 TensorBoard",
+    "entry": "chapters/07_callbacks_tensorboard.py",
+    "deps": [
+      "02_linear_regression"
+    ]
+  },
+  {
+    "id": "08_save_and_export",
+    "num": "08",
+    "title": "第 8 章 · 保存与导出",
+    "entry": "chapters/08_save_and_export.py",
+    "deps": [
+      "06_transfer_learning",
+      "07_callbacks_tensorboard"
+    ]
+  },
+  {
+    "id": "09_capstone",
+    "num": "09",
+    "title": "实战 09 · 综合项目",
+    "entry": "chapters/09_capstone_image_classifier.py",
+    "deps": [
+      "01_tensors_autograd",
+      "02_linear_regression",
+      "03_mlp_mnist",
+      "04_cnn_cifar10",
+      "05_text_imdb",
+      "06_transfer_learning",
+      "07_callbacks_tensorboard",
+      "08_save_and_export"
+    ]
+  },
+  {
+    "id": "10_edge_raspberry_pi",
+    "num": "10",
+    "title": "实战 10 · 边缘部署",
+    "entry": "chapters/10_edge_raspberry_pi.py",
+    "deps": [
+      "08_save_and_export"
+    ]
+  },
+  {
+    "id": "11_tfdata_pipeline",
+    "num": "11",
+    "title": "进阶篇 11 · tf.data 数据管道",
+    "entry": "chapters/11_tfdata_pipeline.py",
+    "deps": []
+  },
+  {
+    "id": "12_rnn_timeseries",
+    "num": "12",
+    "title": "进阶篇 12 · 序列建模",
+    "entry": "chapters/12_rnn_timeseries.py",
+    "deps": [
+      "02_linear_regression"
+    ]
+  },
+  {
+    "id": "13_attention_transformer",
+    "num": "13",
+    "title": "进阶篇 13 · 手写注意力",
+    "entry": "chapters/13_attention_transformer.py",
+    "deps": [
+      "12_rnn_timeseries"
+    ]
+  },
+  {
+    "id": "14_autoencoder_gan",
+    "num": "14",
+    "title": "进阶篇 14 · 生成模型",
+    "entry": "chapters/14_autoencoder_gan.py",
+    "deps": [
+      "03_mlp_mnist"
+    ]
+  },
+  {
+    "id": "15_custom_training",
+    "num": "15",
+    "title": "进阶篇 15 · 自定义训练与性能",
+    "entry": "chapters/15_custom_training.py",
+    "deps": [
+      "01_tensors_autograd",
+      "11_tfdata_pipeline"
+    ]
+  },
+  {
+    "id": "16_text_capstone",
+    "num": "16",
+    "title": "第 16 章 · 进阶毕业项目",
+    "entry": "chapters/16_text_capstone.py",
+    "deps": [
+      "11_tfdata_pipeline",
+      "12_rnn_timeseries",
+      "13_attention_transformer",
+      "15_custom_training"
+    ]
+  }
+]

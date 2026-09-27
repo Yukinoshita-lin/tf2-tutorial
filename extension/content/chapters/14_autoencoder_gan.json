@@ -1,0 +1,43 @@
+{
+  "entry": "chapters/14_autoencoder_gan.py",
+  "goals": "前 14 章全是**判别式**任务：给 x 预测 y。本章换视角——学习数据本身的分布，",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 4：mode collapse（模式坍塌）",
+      "lesson": "🔗 **与下一章的关系**：判别与生成你都见过了。最后一课回到引擎盖下面——本章你已经用过 `GradientTape`（GAN 训练循环），下一章把它彻底讲透，并顺手把前面所有\"为什么快/为什么慢\"的伏笔一次收完。"
+    }
+  ],
+  "passCriteria": "能解释 AE 重建图与 GAN 样本图里看到的一切（包括缺陷）； 能画出 GAN 的训练数据流。",
+  "quiz": [
+    {
+      "question": "AE 的瓶颈起了什么作用？",
+      "answer": "逼网络压缩，学出本质表征（信息 784→32，仅 4%）。"
+    },
+    {
+      "question": "GAN 的 G 和 D 各自在优化什么？",
+      "answer": "D 最大化区分真假；G 最小化 D 的识别能力 ——极小极大博弈。"
+    },
+    {
+      "question": "为什么 GAN 的 loss 震荡是正常的？",
+      "answer": "博弈无共同谷底，双方在互相追逐。 挑战题："
+    }
+  ],
+  "reading": [
+    "Goodfellow et al., *GAN* (2014)：原文 + 三遍阅读法实战",
+    "Lilian Weng *From Autoencoder to Beta-VAE*：表征学习谱系的最佳综述",
+    "Lilian Weng *What are Diffusion Models?*：当前主流生成范式的入门"
+  ],
+  "id": "14_autoencoder_gan",
+  "num": "14",
+  "title": "进阶篇 14 · 生成模型",
+  "deps": [
+    "03_mlp_mnist"
+  ],
+  "mdRange": [
+    2196,
+    2306
+  ]
+}

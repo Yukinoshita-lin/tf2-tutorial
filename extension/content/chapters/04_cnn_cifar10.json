@@ -1,0 +1,76 @@
+{
+  "entry": "chapters/04_cnn_cifar10.py",
+  "goals": "第一次接触 `Conv2D` / `MaxPooling2D` / `Dropout`。",
+  "concepts": [
+    "[卷积 (Convolution)](glossary_zh.md#卷积-convolution)：用卷积核在输入上滑动提取局部特征",
+    "[池化 (Pooling)](glossary_zh.md#池化-pooling)：对特征图降采样，减小尺寸",
+    "[Dropout](glossary_zh.md#dropout)：随机失活，防止过拟合的正则化技术",
+    "[过拟合 (Overfitting)](glossary_zh.md#过拟合-overfitting)：训练好但测试差的现象",
+    "[正则化 (Regularization)](glossary_zh.md#正则化-regularization)：防止过拟合的各种手段"
+  ],
+  "experiments": [
+    "增减卷积层：试试去掉一个卷积块（Conv+Conv+Pool），或者再加一个卷积块，观察准确率和训练时间的变化。",
+    "模型越深越好吗？什么时候开始收益递减？",
+    "改卷积核大小：把 3×3 的卷积核换成 5×5，或者 1×1，比较参数数量和准确率。",
+    "1×1 卷积有什么用？（提示：它可以改变通道数，不改变空间尺寸）",
+    "调 Dropout 比率：把 Dropout 从 0.25 调到 0（不用 Dropout），再调到 0.5，观察训练集和验证集准确率的差距。",
+    "Dropout 越大，正则化效果越强吗？训练会变慢吗？"
+  ],
+  "pitfalls": [
+    "输入形状不对：CNN 的输入是 4 维的 `(batch, height, width, channels)`。如果你忘了通道维度，shape 会不对。灰度图是 1 通道，彩色图是 3 通道。",
+    "卷积后尺寸算错：卷积和池化都会改变特征图的尺寸。如果网络太深、池化太多，特征图可能变成 0×0，直接报错。",
+    "公式：输出尺寸 = (输入尺寸 - 核大小 + 2×padding) / stride + 1",
+    "简单记法：`padding='same'` 时尺寸不变，MaxPooling(2,2) 尺寸减半。",
+    "CPU 上跑 CNN 太慢：CIFAR-10 + CNN 在 CPU 上训练一个 epoch 可能要 1-2 分钟。先把 epochs 设小一点（比如 1-2）确认能跑通，再增加 epoch 数。",
+    "把 Dropout 放在测试模式用：Keras 的 `model.fit()` 自动处理训练/测试模式的切换，不用担心。但如果你自己写训练循环，别忘了用 `training=True/False` 参数。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 1：池化次数太多——网络深度被输入尺寸锁死",
+      "lesson": "**网络能多深受输入尺寸限制**——CIFAR-10（32×32）最多池化 5 次。"
+    },
+    {
+      "title": "反例 4：同样的第一层，Conv vs Dense 参数量对比",
+      "lesson": "**处理网格状数据，先想卷积**——这是 CNN 能做大的根本原因。"
+    },
+    {
+      "title": "反例 2：灰度图忘了加通道维",
+      "lesson": "CNN 的输入永远是 4 维 `(批, 高, 宽, 通道)`——把这句背下来。"
+    },
+    {
+      "title": "反例 3：Dropout 拉到 0.9——正则化过头的欠拟合",
+      "lesson": "正则化是\"药\"——剂量对了治病，剂量过了致病。"
+    }
+  ],
+  "passCriteria": "不看资料画出本章网络的 shape 流； 能对别人讲清\"为什么 CNN 对图片比 MLP 高效\"（局部性 + 权值共享 + 池化）。",
+  "quiz": [
+    {
+      "question": "`(32,32,3)` 经 `Conv2D(16, 3, padding='same')` 后 shape 是？再经 `MaxPooling2D(2)` 后呢？",
+      "answer": "`(32,32,16)` → `(16,16,16)`。same 卷积不变尺寸，池化减半。"
+    },
+    {
+      "question": "卷积核 3×3、输入 3 通道、输出 16 通道，参数量？",
+      "answer": "3×3×3×16 + 16 = 448。"
+    },
+    {
+      "question": "Dropout 训练时开、推理时关，Keras 里谁负责切换？",
+      "answer": "`model.fit`/`model(x, training=...)` 自动处理；自己写训练循环才需要显式传 `training=True/False`。 挑战题："
+    }
+  ],
+  "reading": [
+    "Stanford CS231n *Convolutional Networks* 讲义：CNN 最经典的英文教材",
+    "Chollet《Deep Learning with Python (2nd)》第 8 章：从零实现并可视化卷积",
+    "Distill.pub *Feature Visualization*：看看卷积核\"眼里\"的世界",
+    "进阶：ResNet 论文（He et al., 2015）——残差连接如何让百层网络成为可能"
+  ],
+  "id": "04_cnn_cifar10",
+  "num": "04",
+  "title": "第 4 章 · CNN 入门 (CIFAR-10)",
+  "deps": [
+    "03_mlp_mnist"
+  ],
+  "mdRange": [
+    704,
+    908
+  ]
+}

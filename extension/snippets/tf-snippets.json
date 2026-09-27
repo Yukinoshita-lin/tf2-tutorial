@@ -1,0 +1,161 @@
+{
+  "TF-Sequential 模型": {
+    "prefix": "tf-sequential",
+    "body": [
+      "from tensorflow.keras import layers, models",
+      "model = models.Sequential([",
+      "    layers.Input(shape=($1)),",
+      "    layers.Dense($2, activation='relu'),",
+      "    layers.Dense($3, activation='${4|softmax,sigmoid|}'),",
+      "])",
+      "model.compile(optimizer='adam', loss='${5|sparse_categorical_crossentropy,categorical_crossentropy,binary_crossentropy,mse|}', metrics=['accuracy'])",
+      "$0"
+    ],
+    "description": "Keras Sequential 模型 + compile（第 2 章三步曲）"
+  },
+  "TF-训练循环 GradientTape": {
+    "prefix": "tf-tape-loop",
+    "body": [
+      "optimizer = tf.keras.optimizers.Adam(1e-3)",
+      "",
+      "@tf.function",
+      "def train_step(xb, yb):",
+      "    with tf.GradientTape() as tape:",
+      "        pred = model(xb, training=True)",
+      "        loss = loss_fn(yb, pred)",
+      "    grads = tape.gradient(loss, model.trainable_variables)",
+      "    optimizer.apply_gradients(zip(grads, model.trainable_variables))",
+      "    return loss",
+      "",
+      "for epoch in range(epochs):",
+      "    for xb, yb in train_ds:",
+      "        loss = train_step(xb, yb)",
+      "    print(f'epoch {epoch+1}: loss={loss:.4f}')",
+      "$0"
+    ],
+    "description": "GradientTape 自定义训练循环（进阶篇 15）"
+  },
+  "TF-回调三件套": {
+    "prefix": "tf-callbacks",
+    "body": [
+      "callbacks = [",
+      "    tf.keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True),",
+      "    tf.keras.callbacks.ModelCheckpoint('best.keras', save_best_only=True),",
+      "    tf.keras.callbacks.TensorBoard(log_dir='output/logs'),",
+      "]",
+      "model.fit(x, y, validation_split=0.1, epochs=50, callbacks=callbacks)",
+      "$0"
+    ],
+    "description": "早停 + 存最优 + TensorBoard（第 7 章）"
+  },
+  "TF-tf.data 管道": {
+    "prefix": "tf-data-pipeline",
+    "body": [
+      "ds = tf.data.Dataset.from_tensor_slices((x, y))",
+      "ds = (ds",
+      "      .shuffle(len(x), seed=42)",
+      "      .map(preprocess, num_parallel_calls=tf.data.AUTOTUNE)",
+      "      .batch($1)",
+      "      .cache()",
+      "      .prefetch(tf.data.AUTOTUNE))",
+      "$0"
+    ],
+    "description": "tf.data 标准五算子顺序（进阶篇 11）"
+  },
+  "TF-迁移学习两阶段": {
+    "prefix": "tf-transfer",
+    "body": [
+      "base = tf.keras.applications.MobileNetV2(input_shape=(${1:160}, ${1:160}, 3),",
+      "                                         include_top=False, weights='imagenet')",
+      "base.trainable = False  # 阶段一：冻结",
+      "model = tf.keras.Sequential([",
+      "    base,",
+      "    tf.keras.layers.GlobalAveragePooling2D(),",
+      "    tf.keras.layers.Dropout(0.2),",
+      "    tf.keras.layers.Dense(${2:5}, activation='softmax'),",
+      "])",
+      "model.compile(optimizer=tf.keras.optimizers.Adam(1e-3), loss='sparse_categorical_crossentropy')",
+      "# 阶段二：base.trainable = True 后用 1e-5 微调最后 20 层",
+      "$0"
+    ],
+    "description": "MobileNetV2 迁移学习两阶段（第 6 章）"
+  },
+  "TF-保存三格式": {
+    "prefix": "tf-save",
+    "body": [
+      "model.save('model.keras')                          # 继续训练 / 单文件分发",
+      "model.export('saved_model_dir')                     # 服务端部署（Keras 3）",
+      "converter = tf.lite.TFLiteConverter.from_keras_model(model)",
+      "tflite_model = converter.convert()",
+      "open('model.tflite', 'wb').write(tflite_model)      # 移动端 / 树莓派",
+      "$0"
+    ],
+    "description": "三种保存格式（第 8 章）"
+  },
+  "TF-混淆矩阵": {
+    "prefix": "tf-confusion",
+    "body": [
+      "import numpy as np",
+      "from tf2tutorial.visualize import plot_confusion_matrix",
+      "pred = model.predict(x_test).argmax(axis=1)",
+      "cm = np.zeros((num_classes, num_classes), dtype=int)",
+      "for t, p in zip(y_test, pred):",
+      "    cm[t, p] += 1",
+      "plot_confusion_matrix(cm, class_names=class_names, out_path='figures/cm.png')",
+      "$0"
+    ],
+    "description": "混淆矩阵绘制（第 4/9 章）"
+  },
+  "TF-手写注意力": {
+    "prefix": "tf-attention",
+    "body": [
+      "class SelfAttention(tf.keras.layers.Layer):",
+      "    def __init__(self, d_model=32, heads=2, **kw):",
+      "        super().__init__(**kw)",
+      "        self.h, self.d_k = heads, d_model // heads",
+      "        self.wq = tf.keras.layers.Dense(d_model)",
+      "        self.wk = tf.keras.layers.Dense(d_model)",
+      "        self.wv = tf.keras.layers.Dense(d_model)",
+      "        self.wo = tf.keras.layers.Dense(d_model)",
+      "",
+      "    def call(self, x):",
+      "        b = tf.shape(x)[0]",
+      "        q = tf.reshape(self.wq(x), (b, -1, self.h, self.d_k))",
+      "        k = tf.reshape(self.wk(x), (b, -1, self.h, self.d_k))",
+      "        v = tf.reshape(self.wv(x), (b, -1, self.h, self.d_k))",
+      "        q, k, v = [tf.transpose(t, (0, 2, 1, 3)) for t in (q, k, v)]",
+      "        scores = tf.matmul(q, k, transpose_b=True) / tf.sqrt(tf.cast(self.d_k, tf.float32))",
+      "        out = tf.matmul(tf.nn.softmax(scores, axis=-1), v)",
+      "        return self.wo(tf.reshape(tf.transpose(out, (0, 2, 1, 3)), (b, -1, self.h * self.d_k)))",
+      "$0"
+    ],
+    "description": "手写多头自注意力（进阶篇 13）"
+  },
+  "TF-嵌入+文本分类": {
+    "prefix": "tf-text",
+    "body": [
+      "model = tf.keras.Sequential([",
+      "    tf.keras.layers.Input(shape=(${1:None},), dtype=tf.int64),",
+      "    tf.keras.layers.Embedding(${2:10000}, ${3:64}),",
+      "    tf.keras.layers.GlobalAveragePooling1D(),",
+      "    tf.keras.layers.Dense(64, activation='relu'),",
+      "    tf.keras.layers.Dropout(0.3),",
+      "    tf.keras.layers.Dense(1, activation='sigmoid'),",
+      "])",
+      "model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])",
+      "$0"
+    ],
+    "description": "Embedding 文本二分类（第 5 章）"
+  },
+  "TF-种子与目录": {
+    "prefix": "tf-seed",
+    "body": [
+      "from tf2tutorial.config import ensure_dirs",
+      "from tf2tutorial.utils import set_global_seed",
+      "set_global_seed(42)",
+      "ensure_dirs()",
+      "$0"
+    ],
+    "description": "固定随机种子 + 建目录（实验可信度底线）"
+  }
+}

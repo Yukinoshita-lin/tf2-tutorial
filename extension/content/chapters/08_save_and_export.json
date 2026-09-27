@@ -1,0 +1,70 @@
+{
+  "entry": "chapters/08_save_and_export.py",
+  "goals": "通读本章并跑通入口脚本。",
+  "concepts": [
+    "`.keras` 格式：Keras 原生的模型保存格式，单文件包含结构+权重+优化器",
+    "`SavedModel`：TensorFlow 的通用序列化格式，用于部署和格式转换",
+    "`.tflite`：TensorFlow Lite 格式，专为移动端/嵌入式优化",
+    "量化（Quantization）：降低权重精度以减小模型体积和加速推理",
+    "推理（Inference）：用训练好的模型做预测的过程"
+  ],
+  "experiments": [
+    "比较三种格式的文件大小：分别保存 `.keras`、`SavedModel`、`.tflite` 三种格式，看看它们各占多少磁盘空间。",
+    "TFLite 比 SavedModel 小多少？",
+    "如果用了量化（int8），还能再小多少？",
+    "加载保存的模型继续训练：保存一个训练了 5 个 epoch 的模型，然后加载回来再训练 5 个 epoch，看看准确率是不是接着涨。",
+    "优化器状态也保存了吗？怎么验证？",
+    "用 TFLite 做推理：写一段代码，用 TFLite Interpreter 加载 `.tflite` 模型，对一张测试图片做预测，和 Keras 模型的预测结果对比。"
+  ],
+  "pitfalls": [
+    "加载模型时缺少自定义层：如果你的模型里有自定义层（自己继承 Layer 写的），加载 `.keras` 模型时要传 `custom_objects` 参数告诉 Keras 这个层是什么。",
+    "SavedModel 和 .keras 搞混：`.keras` 是 Keras 格式，保存的是 Keras 模型对象；SavedModel 是 TF 格式，保存的是计算图。SavedModel 加载回来后不能直接 `fit()`，因为它不是 Keras Model 对象（不过 TF 2 里可以用 `tf.keras.models.load_model` 加载 SavedModel 并还原成 Keras 模型，但有局限性）。",
+    "TFLite 不支持某些算子：TFLite 只支持常用算子，如果你的模型用了比较冷门的算子，转换可能失败。解决办法：用 TFLite 的 Select TF ops，或者改写模型结构。",
+    "量化后精度下降太多：全整数量化可能导致精度明显下降。可以试试：",
+    "用动态范围量化（只有权重量化，激活还是浮点）",
+    "用 float16 量化（精度损失更小）",
+    "用校准数据集做全整数量化（更准确）",
+    "忘记保存预处理逻辑：模型本身只是计算图，数据预处理（归一化、resize 等）也要保存下来，否则推理时预处理不一致，结果会错得离谱。"
+  ],
+  "counterExamples": [
+    {
+      "title": "反例 2：自定义层没传 custom_objects",
+      "lesson": "自定义的东西（层/损失/指标），加载端都要\"认识\"。"
+    },
+    {
+      "title": "反例 3：全整数量化没给代表性数据集",
+      "lesson": "**量化不是免费的，它需要数据**。"
+    }
+  ],
+  "passCriteria": "能为\"继续训练 / 服务端 / 树莓派\"三场景各选对格式并说明理由； 能独立跑通\"Keras → SavedModel → .tflite\"全链路。",
+  "quiz": [
+    {
+      "question": "三个场景各选什么格式？继续训练 / 服务端部署 / 树莓派？",
+      "answer": "`.keras` / SavedModel / `.tflite`。"
+    },
+    {
+      "question": "量化为什么能让模型变小变快？",
+      "answer": "32 位浮点 → 8 位整数：体积÷4； 整数运算比浮点快且省内存带宽。"
+    },
+    {
+      "question": "SavedModel 里没有你的 Python 源码，自定义逻辑怎么保留？",
+      "answer": "写成 Keras 层/函数， 让它被追踪进计算图。 挑战题："
+    }
+  ],
+  "reading": [
+    "Keras 官方 *Save and serialize models* 指南：三种格式的权威说明",
+    "TensorFlow Lite *Convert* 文档：量化选项的完整矩阵",
+    "实战 10 + `docs/raspberry_pi_deployment_zh.md`：本策内容的落地实战"
+  ],
+  "id": "08_save_and_export",
+  "num": "08",
+  "title": "第 8 章 · 保存与导出",
+  "deps": [
+    "06_transfer_learning",
+    "07_callbacks_tensorboard"
+  ],
+  "mdRange": [
+    1464,
+    1665
+  ]
+}

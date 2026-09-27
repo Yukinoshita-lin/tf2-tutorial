@@ -1,0 +1,44 @@
+{
+  "entry": "chapters/11_tfdata_pipeline.py",
+  "goals": "主线章节假设\"数据是一个能塞进内存的 NumPy 数组\"。真实工程里数据在磁盘、",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 1：map 的计算结果没被使用 → 整段计算被死代码消除（DCE）",
+      "lesson": "让 map 返回计算结果；基准\"快得可疑\"时先怀疑这里。"
+    },
+    {
+      "title": "反例 3：给数据集计时却没真正消费元素",
+      "lesson": "🔗 **与下一章的关系**：管道解决了\"数据怎么来\"。但进阶 12 换一种全新的数据形态——**序列**。你会第一次给网络\"喂时间\"，而管道里的窗口思维马上就会用上。"
+    }
+  ],
+  "passCriteria": "能向别人解释\"这组基准数字每一项为什么是这个值\"。",
+  "quiz": [
+    {
+      "question": "五个算子的标准顺序？各自的职责？",
+      "answer": "shuffle 打乱 / map 预处理 / batch 组批 / cache 缓存 / prefetch 预取。"
+    },
+    {
+      "question": "为什么 cache 是稳赚的？",
+      "answer": "它消除重复计算，不涉及资源竞争。"
+    },
+    {
+      "question": "DCE 陷阱是怎么发生的？",
+      "answer": "map 的返回值不依赖计算结果，TF 把计算剪掉。 挑战题："
+    }
+  ],
+  "reading": [
+    "TensorFlow 官方 *Better performance with the tf.data API*：全部优化项的权威清单",
+    "手册进阶篇 15 章：tf.function 与图执行的深入讨论（与本章互为表里）"
+  ],
+  "id": "11_tfdata_pipeline",
+  "num": "11",
+  "title": "进阶篇 11 · tf.data 数据管道",
+  "deps": [],
+  "mdRange": [
+    1894,
+    1986
+  ]
+}

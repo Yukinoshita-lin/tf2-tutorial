@@ -1,0 +1,9 @@
+.vscode/**
+ src/**            # 源码不打包（只发布编译产物 out/）
+**/*.ts
+**/*.map
+node_modules/**
+scripts/**
+.gitignore
+tsconfig.json
+DESIGN.md

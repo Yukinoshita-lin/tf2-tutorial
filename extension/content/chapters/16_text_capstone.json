@@ -1,0 +1,41 @@
+{
+  "entry": "chapters/16_text_capstone.py",
+  "goals": "一个任务，五课集成——**文本情感分类**，但每一环节都必须用进阶篇的方式实现：",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [],
+  "passCriteria": "不看教程独立重跑全流程，并能指着代码说出每一块来自哪一章、 为什么存在。**至此进阶篇毕业**——去 [16 周学期制课程表](study_plan_semester.md) 开始你的学期，或回 [知识地图](knowledge_map.md) 选一条岔路。",
+  "quiz": [
+    {
+      "question": "本项目的五环节分别来自哪一章？",
+      "answer": "管道 11 / 定长窗口 12 / 注意力头 13 / tape 训练循环 15 / 导出 08（评估方法见附录 H）。"
+    },
+    {
+      "question": "为什么注意力和池化都要 mask？",
+      "answer": "让模型\"看不见\" PAD 填充位，否则它会在 无意义的填充符上花注意力、稀释真实内容的平均。"
+    },
+    {
+      "question": "F1 比 acc 多告诉了你什么？",
+      "answer": "精确率与召回率的调和平均——两类错误 不再被\"总量正确\"掩盖。 挑战题："
+    }
+  ],
+  "reading": [
+    "手册第 9 章 9.2 节：从本项目的注意力头出发，通向完整 Transformer 的路线",
+    "附录 H（评估指标指南）：把本章的 F1 讲全（PR 曲线 / AUC）",
+    "`teaching/project_template.md`：想把它扩成正式项目报告，用这个模板"
+  ],
+  "id": "16_text_capstone",
+  "num": "16",
+  "title": "第 16 章 · 进阶毕业项目",
+  "deps": [
+    "11_tfdata_pipeline",
+    "12_rnn_timeseries",
+    "13_attention_transformer",
+    "15_custom_training"
+  ],
+  "mdRange": [
+    2423,
+    2513
+  ]
+}

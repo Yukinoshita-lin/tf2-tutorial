@@ -1,0 +1,47 @@
+{
+  "entry": "chapters/12_rnn_timeseries.py",
+  "goals": "前 11 章的网络都假设样本是\"无序的特征向量\"。本章进入**序列数据**的世界：",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 2：忘了时间维 `(N, window, 1)`，喂成 `(N, window)`",
+      "lesson": "记忆：RNN 的输入永远是 `(批, 时间步, 特征)`，哪怕特征只有 1 个也要补 1。"
+    },
+    {
+      "title": "反例 3：SimpleRNN 面对长周期序列",
+      "lesson": "🔗 **与下一章的关系**：学完 RNN 你知道了它的死穴——**记不长**（梯度沿时间连乘）。下一章的注意力就是来解决这个问题的：不做\"顺时间传话\"，让每个位置**一步看全**整个序列。"
+    }
+  ],
+  "passCriteria": "不看书写出滑动窗口的形状变换；能说清四种模型在同一任务上的 实测排序及其原因。",
+  "quiz": [
+    {
+      "question": "`windowize` 做了什么？为什么说它比网络选择更重要？",
+      "answer": "把序列切成 (窗口, 下一拍) 的监督学习问题——窗口设计直接决定任务难度与信息量。"
+    },
+    {
+      "question": "SimpleRNN 为什么\"记不长\"？",
+      "answer": "梯度沿时间步连乘，长序列下消失/爆炸。"
+    },
+    {
+      "question": "LSTM 的\"门\"在干什么？",
+      "answer": "用可学习的开关控制\"记什么/忘什么/输出什么\"， 让信息走加法通路绕过连乘。 挑战题："
+    }
+  ],
+  "reading": [
+    "Chris Olah *Understanding LSTM Networks*：LSTM 门控的最佳图解（必读）",
+    "Stanford CS224n *RNN* 讲义：从语言模型视角再看一遍",
+    "手册第 9 章 9.2 节：RNN 之后的世界（Seq2Seq → Transformer）"
+  ],
+  "id": "12_rnn_timeseries",
+  "num": "12",
+  "title": "进阶篇 12 · 序列建模",
+  "deps": [
+    "02_linear_regression"
+  ],
+  "mdRange": [
+    1986,
+    2083
+  ]
+}

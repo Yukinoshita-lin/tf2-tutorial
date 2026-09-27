@@ -1,0 +1,47 @@
+{
+  "entry": "chapters/13_attention_transformer.py",
+  "goals": "不调库，手写 scaled dot-product attention（30 行核心代码），",
+  "concepts": [],
+  "experiments": [],
+  "pitfalls": [],
+  "counterExamples": [
+    {
+      "title": "反例 2：`reshape` 把 `-1` 放在最后一维",
+      "lesson": "Keras 3 要求权重形状完全确定。最后一维必须写 `heads * d_k` 静态值。"
+    },
+    {
+      "title": "反例 4：变长序列不做 padding mask",
+      "lesson": "🔗 **与下一章的关系**：注意力让模型\"看懂\"序列。下一章换一个更狂野的问题——不看任何标签，让模型学会**无中生有**（生成模型）。"
+    }
+  ],
+  "passCriteria": "不看资料手写 `SelfAttention` 的 call()； 能向别人讲清\"为什么除以 sqrt(d_k)\"和\"为什么必须位置编码\"。",
+  "quiz": [
+    {
+      "question": "写出 attention 公式，并解释 Q/K/V 各自的角色。",
+      "answer": "softmax(QK^T/√d_k)V。"
+    },
+    {
+      "question": "本章排列不变性实验的指标是什么？两个数字分别说明什么？",
+      "answer": "打乱前后预测一致率：无 PE = 1.0000（排列不变），有 PE < 1（位置参与）。"
+    },
+    {
+      "question": "一个 Transformer 块有哪几个零件？",
+      "answer": "注意力、残差、LayerNorm、FFN。 挑战题："
+    }
+  ],
+  "reading": [
+    "Jay Alammar *The Illustrated Transformer*：最好的图解（先读这个再读原文）",
+    "Vaswani et al., *Attention Is All You Need* (2017)：原文，三遍阅读法实战",
+    "Karpathy *nanoGPT*：几百行代码的完整 GPT，本章的\"下集\""
+  ],
+  "id": "13_attention_transformer",
+  "num": "13",
+  "title": "进阶篇 13 · 手写注意力",
+  "deps": [
+    "12_rnn_timeseries"
+  ],
+  "mdRange": [
+    2083,
+    2196
+  ]
+}

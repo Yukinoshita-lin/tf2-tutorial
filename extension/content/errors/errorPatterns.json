@@ -1,0 +1,240 @@
+{
+  "patterns": [
+    {
+      "id": "matmul_shape_mismatch",
+      "regex": "(shapes \\((\\d+),(\\d+)\\) and \\((\\d+),(\\d+)\\) not aligned)|(matmul: Input operand \\d+ has a mismatch in its core dimension)",
+      "title": "矩阵乘法 shape 不匹配",
+      "explanation": "矩阵乘法要求第一个矩阵的列数等于第二个矩阵的行数（numpy 2.x 的新文案是 'matmul: Input operand ... has a mismatch in its core dimension'）。",
+      "causes": [
+        "想做矩阵乘法，但两个矩阵的 shape 不满足 (m,n)@(n,k)",
+        "想做的其实是逐元素乘法，却用了 @ 运算符"
+      ],
+      "fixes": [
+        "矩阵乘法：改成 a @ b.T（转置补齐维度）",
+        "逐元素乘法：改成 a * b"
+      ],
+      "relatedChapter": "第 1 章 反例教室 反例 1"
+    },
+    {
+      "id": "input_shape_wrong",
+      "regex": "Input 0 of layer .* is incompatible",
+      "title": "输入形状与模型期望不符",
+      "explanation": "模型期望的输入形状和实际传入的不一致。最常见：input_shape 写成了整个数据集的形状。",
+      "causes": [
+        "input_shape 描述单个样本，却写成了 (样本数, 特征数)",
+        "灰度图缺少通道维（应为 (高, 宽, 1)）",
+        "RNN 输入缺少时间维（应为 (批, 时间步, 特征)）"
+      ],
+      "fixes": [
+        "逐层打印 x.shape，与 expected/found 对照",
+        "input_shape 写 (特征数,)；灰度图补 1；RNN 输入保证 3 维"
+      ],
+      "relatedChapter": "第 2 章反例 1 / 第 4 章选读反例 2 / 进阶 12 反例 2"
+    },
+    {
+      "id": "negative_dimension",
+      "regex": "Negative dimension size",
+      "title": "特征图被池化到负数尺寸",
+      "explanation": "池化次数太多，特征图减半到 1 之后没有'半个像素'可池化。",
+      "causes": [
+        "网络太深而输入分辨率太小（如 32×32 池化超过 5 次）"
+      ],
+      "fixes": [
+        "减少 MaxPooling 次数，或提高输入分辨率"
+      ],
+      "relatedChapter": "第 4 章反例教室 反例 1"
+    },
+    {
+      "id": "must_compile",
+      "regex": "You must compile (your model|the model) before",
+      "title": "模型尚未 compile 就直接 fit",
+      "explanation": "Keras 需要先通过 compile 声明优化器与损失函数，才知道'怎么学'。",
+      "causes": [
+        "搭完模型直接调用了 fit"
+      ],
+      "fixes": [
+        "在 fit 之前调用 model.compile(optimizer=..., loss=...)"
+      ],
+      "relatedChapter": "第 2 章选读反例 3"
+    },
+    {
+      "id": "keras_tensor_wrong_fn",
+      "regex": "A KerasTensor cannot be used as input to a TensorFlow function",
+      "title": "函数式布线中直接使用了 tf.*",
+      "explanation": "Keras 3 的函数式图布线只能用 Keras 层或 keras.ops；层的 call() 内部才可以用原生 tf.*。",
+      "causes": [
+        "在 build_model 的布线代码里写了 tf.not_equal / tf.cast 等原始 TF 函数"
+      ],
+      "fixes": [
+        "改用 tf.keras.ops.not_equal / tf.keras.ops.cast 等",
+        "或把计算包进一个自定义层 / Lambda 层"
+      ],
+      "relatedChapter": "第 16 章反例教室"
+    },
+    {
+      "id": "shape_fully_defined",
+      "regex": "must be fully-defined",
+      "title": "权重形状不能含动态维度",
+      "explanation": "Keras 3 要求构建权重时形状完全确定（不含 None/-1）。",
+      "causes": [
+        "reshape 把 -1 放在了最后一维，导致 Dense 无法初始化权重"
+      ],
+      "fixes": [
+        "最后一维写成静态值（如 heads * d_k），batch/seq 保持动态"
+      ],
+      "relatedChapter": "进阶篇 13 反例教室 反例 2"
+    },
+    {
+      "id": "unknown_layer",
+      "regex": "Unknown layer",
+      "title": "加载模型时缺少自定义对象",
+      "explanation": ".keras 文件只存结构不存 Python 类，加载端'不认识'自定义层/损失。",
+      "causes": [
+        "模型包含自定义层，加载时未传 custom_objects"
+      ],
+      "fixes": [
+        "load_model(..., custom_objects={'MyLayer': MyLayer})"
+      ],
+      "relatedChapter": "第 8 章选读反例 2"
+    },
+    {
+      "id": "indices_out_of_range",
+      "regex": "indices( out of range|.*out of range)|out of range.*vocab",
+      "title": "词编号超出词表范围",
+      "explanation": "Embedding 要求输入编号 < vocab_size。",
+      "causes": [
+        "数据中漏过滤生僻词，出现 >= vocab_size 的编号"
+      ],
+      "fixes": [
+        "预处理时把编号 >= vocab_size 的词过滤或映射为 <UNK>"
+      ],
+      "relatedChapter": "第 5 章反例教室 反例 2"
+    },
+    {
+      "id": "ragged_sequence",
+      "regex": "inhomogeneous shape|setting an array element with a sequence",
+      "title": "变长序列直接构造 numpy 数组",
+      "explanation": "numpy 数组要求各行等长；变长文本序列必须先 padding 到统一长度。",
+      "causes": [
+        "不同长度的序列直接 np.array(list_of_lists)"
+      ],
+      "fixes": [
+        "用 keras.utils.pad_sequences(seqs, maxlen=N) 补零到定长"
+      ],
+      "relatedChapter": "第 5 章常见坑 2 / 进阶篇 12"
+    },
+    {
+      "id": "rnn_ndims",
+      "regex": "expected ndims=3",
+      "title": "RNN 输入缺少时间维",
+      "explanation": "RNN 层要求输入为 (批, 时间步, 特征) 三维。",
+      "causes": [
+        "只给了 (批, 特征) 的二维输入"
+      ],
+      "fixes": [
+        "x[..., None] 显式补上时间维"
+      ],
+      "relatedChapter": "进阶篇 12 反例教室 反例 2"
+    },
+    {
+      "id": "resource_exhausted",
+      "regex": "ResourceExhaustedError|OOM when allocating",
+      "title": "内存/显存耗尽",
+      "explanation": "batch 太大或模型太大，装不下当前内存/显存。",
+      "causes": [
+        "batch_size 过大",
+        "模型参数量超出设备容量"
+      ],
+      "fixes": [
+        "batch_size 减半重试",
+        "缩小模型（层数/隐藏单元/图片分辨率）"
+      ],
+      "relatedChapter": "第 10 章树莓派反例 2 / 第 11 章技巧 5"
+    },
+    {
+      "id": "module_not_found",
+      "regex": "ModuleNotFoundError: No module named '([^']+)'",
+      "title": "缺少 Python 模块",
+      "explanation": "当前解释器环境里没有这个包——最常见原因是装错了环境。",
+      "causes": [
+        "包装在了别的 venv，当前解释器不可见",
+        "包名拼写错误"
+      ],
+      "fixes": [
+        "运行「TF 学习伴侣: 环境自检与一键配置」确认解释器",
+        "用当前解释器安装：python -m pip install <包名>"
+      ],
+      "relatedChapter": "第 12 章 12.3 翻译表"
+    },
+    {
+      "id": "file_not_found",
+      "regex": "FileNotFoundError",
+      "title": "找不到文件或目录",
+      "explanation": "脚本以相对路径访问了不存在的文件。",
+      "causes": [
+        "没有从项目根目录运行脚本（相对路径错位）",
+        "数据集还没下载"
+      ],
+      "fixes": [
+        "从工作区根目录运行（本插件已自动把 cwd 设为工作区根）",
+        "运行 python scripts/download_data.py 提前下载数据"
+      ],
+      "relatedChapter": "第 0 章常见坑 1"
+    },
+    {
+      "id": "syntax_error",
+      "regex": "SyntaxError",
+      "title": "语法错误",
+      "explanation": "代码不符合 Python 语法。",
+      "causes": [
+        "少括号/冒号、误用中文标点、缩进混用 Tab 与空格"
+      ],
+      "fixes": [
+        "看报错指出的行号附近",
+        "检查是否把中文引号/逗号打进了代码"
+      ],
+      "relatedChapter": "第 12 章 12.3 翻译表"
+    },
+    {
+      "id": "nan_loss",
+      "regex": "loss: nan|loss=nan|loss = nan",
+      "title": "loss 变成 nan",
+      "explanation": "数值爆炸：最常见的三个原因是学习率过大、log(0)、除以零。",
+      "causes": [
+        "学习率太大，参数飞出数值范围",
+        "损失函数中出现 log(0) 或除零"
+      ],
+      "fixes": [
+        "学习率除以 10 再试",
+        "检查损失里有没有 log/除法，加 epsilon 保护"
+      ],
+      "relatedChapter": "第 1 章反例教室 反例 3"
+    },
+    {
+      "id": "dtype_mismatch_cast",
+      "regex": "cannot compute.*due to input types|Expected (float|double).*got",
+      "title": "数据类型不匹配",
+      "explanation": "两个参与运算的张量 dtype 不同（如 float32 与 int32 相除）。",
+      "causes": [
+        "标签没有 cast 成 float、整数张量参与浮点除法"
+      ],
+      "fixes": [
+        "显式 x = tf.cast(x, tf.float32) 后再运算"
+      ],
+      "relatedChapter": "第 1 章核心概念"
+    },
+    {
+      "id": "tokenizer_oov_inverse",
+      "regex": "Characters and ngrams not found|Decoding error|invalid start byte",
+      "title": "解码/编码错误",
+      "explanation": "读取非 UTF-8 文本文件，或解码了二进制内容。",
+      "causes": [
+        "文本文件是 GBK 等编码却按 UTF-8 读取"
+      ],
+      "fixes": [
+        "open(path, encoding='utf-8', errors='ignore') 或确认文件编码"
+      ],
+      "relatedChapter": "第 12 章 12.3 翻译表"
+    }
+  ]
+}

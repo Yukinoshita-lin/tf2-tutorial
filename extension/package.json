@@ -1,0 +1,207 @@
+{
+  "name": "tf-learning-companion",
+  "displayName": "TF 学习伴侣 (TensorFlow Learning Companion)",
+  "description": "TensorFlow 教学伴侣：代码 + 讲解 + 运行 + 报错翻译 + 自测 + 进度，一站式学习环境。配合 tf2-tutorial 教学仓库使用。",
+  "version": "0.1.7",
+  "publisher": "tf2-tutorial",
+  "license": "Apache-2.0",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education",
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "tensorflow",
+    "deep learning",
+    "教学",
+    "学习",
+    "machine learning"
+  ],
+  "activationEvents": [
+    "onCommand:tfTutor.openLesson",
+    "onCommand:tfTutor.setupEnv",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tfTutor.runFile",
+        "title": "运行当前文件",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.runCell",
+        "title": "运行当前单元格 (# %%)",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.runSelection",
+        "title": "运行选中代码",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.stopRun",
+        "title": "停止运行",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.openLesson",
+        "title": "打开当前章节讲解",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.showOutput",
+        "title": "显示输出面板",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.scanParams",
+        "title": "参数扫描（选中参数赋值后使用）",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.explainError",
+        "title": "解释上一次报错",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.takeQuiz",
+        "title": "本章过关自测",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.showProgress",
+        "title": "查看学习进度",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.setupEnv",
+        "title": "环境自检与一键配置",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.openManual",
+        "title": "打开学习手册",
+        "category": "TF 学习伴侣"
+      },
+      {
+        "command": "tfTutor.resetChapter",
+        "title": "重置本章进度",
+        "category": "TF 学习伴侣"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tfTutor.runFile",
+        "key": "ctrl+enter",
+        "when": "editorTextFocus && resourceExtname == .py"
+      },
+      {
+        "command": "tfTutor.runCell",
+        "key": "shift+enter",
+        "when": "editorTextFocus && resourceExtname == .py"
+      },
+      {
+        "command": "tfTutor.runSelection",
+        "key": "ctrl+shift+enter",
+        "when": "editorTextFocus && editorHasSelection"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tfTutor",
+          "title": "TF 学习伴侣",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "tfTutor": [
+        {
+          "id": "tfTutor.knowledgeMap",
+          "name": "知识地图"
+        },
+        {
+          "id": "tfTutor.progress",
+          "name": "学习进度"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "tfTutor.runFile",
+          "when": "resourceExtname == .py",
+          "group": "tfTutor@1"
+        },
+        {
+          "command": "tfTutor.runCell",
+          "when": "resourceExtname == .py",
+          "group": "tfTutor@2"
+        },
+        {
+          "command": "tfTutor.scanParams",
+          "when": "editorHasSelection && resourceExtname == .py",
+          "group": "tfTutor@3"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "python",
+        "path": "./snippets/tf-snippets.json"
+      }
+    ],
+    "configuration": {
+      "title": "TF 学习伴侣",
+      "properties": {
+        "tfTutor.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python 解释器路径（留空则自动探测：工作区 .venv → tf2-env → PATH）"
+        },
+        "tfTutor.timeoutSec": {
+          "type": "number",
+          "default": 300,
+          "description": "脚本运行超时（秒），超时自动终止"
+        },
+        "tfTutor.autoSaveBeforeRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "运行前自动保存当前文件"
+        },
+        "tfTutor.lightMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "轻量模式：提示将 EPOCHS 降为 1，适合低配机器快速体验"
+        },
+        "tfTutor.manualPath": {
+          "type": "string",
+          "default": "docs/learning_handbook_zh.md",
+          "description": "学习手册 Markdown 路径（相对工作区根目录）"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "tsc -p ./ && node --test \"test/*.test.mjs\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://example.com/tf2-tutorial"
+  }
+}
