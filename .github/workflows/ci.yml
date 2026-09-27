@@ -34,7 +34,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # --test 的 glob 参数需要 Node >= 21（20 会把模式当字面路径）
+          node-version: 22
       - name: Install dependencies
         run: npm install --no-fund --no-audit
         working-directory: extension
